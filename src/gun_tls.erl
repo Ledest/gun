@@ -29,21 +29,21 @@ messages() -> {ssl, ssl_closed, ssl_error}.
 -spec connect(inet:socket(), any(), timeout())
 	-> {ok, ssl:sslsocket()} | {error, atom()}.
 connect(Socket, Opts, Timeout) ->
-	ssl:connect(Socket, Opts, Timeout).
+	erltls:connect(Socket, Opts, Timeout).
 
 -spec send(ssl:sslsocket(), iodata()) -> ok | {error, atom()}.
 send(Socket, Packet) ->
-	ssl:send(Socket, Packet).
+	erltls:send(Socket, Packet).
 
 -spec setopts(ssl:sslsocket(), list()) -> ok | {error, atom()}.
 setopts(Socket, Opts) ->
-	ssl:setopts(Socket, Opts).
+	erltls:setopts(Socket, Opts).
 
 -spec sockname(ssl:sslsocket())
 	-> {ok, {inet:ip_address(), inet:port_number()}} | {error, atom()}.
 sockname(Socket) ->
-	ssl:sockname(Socket).
+	erltls:sockname(Socket).
 
 -spec close(ssl:sslsocket()) -> ok.
 close(Socket) ->
-	ssl:close(Socket).
+	erltls:close(Socket).
