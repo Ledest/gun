@@ -1093,23 +1093,21 @@ initial_tls_handshake(_, {retries, Retries, Socket}, State0=#state{opts=Opts, or
 
 ensure_alpn_sni(Protocols0, TransOpts0, OriginHost) ->
 	%% ALPN.
-	Protocols = lists:foldl(fun
-		(http, Acc) -> [<<"http/1.1">>|Acc];
-		({http, _}, Acc) -> [<<"http/1.1">>|Acc];
-		(http2, Acc) -> [<<"h2">>|Acc];
-		({http2, _}, Acc) -> [<<"h2">>|Acc];
-		(_, Acc) -> Acc
-	end, [], Protocols0),
-	%% Add ALPN only if not provided by caller
-	TransOpts =
-		case lists:keymember(alpn_advertised_protocols, 1, TransOpts0) of
-			true ->
-				TransOpts0;
-			false ->
-				[{alpn_advertised_protocols, Protocols},
-				 {client_preferred_next_protocols, {client, Protocols, <<"http/1.1">>}}
-				|TransOpts0]
-		end,
+	TransOpts = case lists:keymember(alpn_advertised_protocols, 1, TransOpts0) of
+		true ->
+			TransOpts0;
+		false ->
+			Protocols = lists:foldl(fun
+				(http, Acc) -> [<<"http/1.1">>|Acc];
+				({http, _}, Acc) -> [<<"http/1.1">>|Acc];
+				(http2, Acc) -> [<<"h2">>|Acc];
+				({http2, _}, Acc) -> [<<"h2">>|Acc];
+				(_, Acc) -> Acc
+			end, [], Protocols0),
+			[{alpn_advertised_protocols, Protocols},
+			 {client_preferred_next_protocols, {client, Protocols, <<"http/1.1">>}}
+			|TransOpts0]
+	end,
 	%% SNI.
 	%%
 	%% Normally only DNS hostnames are supported for SNI. However, the ssl
