@@ -646,6 +646,7 @@ handle_common(info, {'DOWN', _MRef, process, ConnPid0, Reason}, _,
 			_ = monitor(process, ConnPid),
 			{next_state, degraded, StateData#state{conns=Conns#{ConnPid => down}, conns_meta=ConnsMeta}}
 	end;
+handle_common(info, {gun_tunnel_up, _, _, _}, _, _) -> keep_state_and_data;
 handle_common({call, From}, info, StateName, #state{host=Host, port=Port,
 		opts=Opts, table=Tid, conns=Conns, conns_meta=ConnsMeta}) ->
 	{keep_state_and_data, {reply, From, {StateName, #{
