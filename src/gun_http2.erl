@@ -981,8 +981,9 @@ close_stream(State, #stream{ref=StreamRef, reply_to=ReplyTo}, Reason) ->
 	gun:reply(ReplyTo, {gun_error, self(), stream_ref(State, StreamRef), Reason}),
 	ok.
 
-keepalive(State=#http2_state{pings_unack=PingsUnack, opts=Opts}, _, EvHandlerState)
-		when PingsUnack >= map_get(keepalive_tolerance, Opts) ->
+keepalive(State=#http2_state{pings_unack=PingsUnack, opts=#{keepalive_tolerance := KeepaliveTolerance}},
+		_, EvHandlerState)
+		when PingsUnack >= KeepaliveTolerance ->
 	{connection_error(State, {connection_error, no_error,
 		'The number of unacknowledged pings exceed the configured tolerance value.'}),
 		EvHandlerState};
