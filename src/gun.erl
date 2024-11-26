@@ -15,10 +15,6 @@
 -module(gun).
 -behavior(gen_statem).
 
--ifdef(OTP_RELEASE).
--compile({nowarn_deprecated_function, [{erlang, get_stacktrace, 0}]}).
--endif.
-
 %% Connection.
 -export([open/2]).
 -export([open/3]).
